@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tokyo Culture Quest - 7-Day Adventure</title>
+    <style>
+        :root {
+            --primary-color: #2ecc71;
+            --secondary-color: #27ae60;
+            --accent-color: #f39c12;
+            --light-bg: #f9f9f9;
+            --card-bg: #fff;
+            --text-color: #333;
+            --header-text: #fff;
+            --shadow: 0 4px 8px rgba(0,0,0,0.1);
+            --hover-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            --border-radius: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-color);
+            line-height: 1.6;
+            background-color: var(--light-bg);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: var(--header-text);
+            text-align: center;
+            padding: 2em 0;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .nav-menu {
+            background: linear-gradient(to right, #333333, #444444);
+            border-radius: var(--border-radius);
+            display: flex;
+            justify-content: center;
+            padding: 10px 0;
+            margin-bottom: 20px;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            padding: 15px 20px;
+            margin: 0 5px;
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+        }
+
+        .nav-menu a:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 3fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .sidebar {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            height: fit-content;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+
+        h4 {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .day-card {
+            border-left: 5px solid var(--primary-color);
+            padding-left: 20px;
+            margin-bottom: 30px;
+        }
+
+        .highlight {
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin: 15px 0;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .tab-container {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            display: flex;
+        }
+
+        .tab-button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 15px 20px;
+            transition: 0.3s;
+            font-size: 17px;
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #FF8000 100%);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 25px;
+            border: 1px solid #ccc;
+            border-top: none;
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            animation: fadeEffect 0.5s;
+        }
+
+        @keyframes fadeEffect {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
+
+        .map-container {
+            width: 100%;
+            height: 400px;
+            margin-bottom: 25px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 1px solid #eee;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .emergency-box {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-menu {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav-menu a {
+                margin: 5px 0;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .smooth-scroll {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body class="smooth-scroll">
+    <div class="container">
+        <header>
+            <h1>🗾 Tokyo Culture Quest</h1>
+            <p class="tagline">7-Day Solo Adventure • March 2024</p>
+        </header>
+
+        <nav class="nav-menu">
+            <a href="#itinerary">📅 Itinerary</a>
+            <a href="#maps">🗺️ Maps</a>
+            <a href="#attractions">🏛️ Attractions</a>
+            <a href="#language">🗣️ Language</a>
+            <a href="#etiquette">🤝 Etiquette</a>
+            <a href="#tips">💡 Tips</a>
+            <a href="#emergency">🚨 Emergency</a>
+        </nav>
+
+        <div class="main-content">
+            <aside class="sidebar">
+                <div class="card">
+                    <h3>Trip Overview</h3>
+                    <p><strong>📅 Dates:</strong> March 15-22, 2024</p>
+                    <p><strong>👤 Travelers:</strong> 1 Solo traveler</p>
+                    <p><strong>💰 Budget:</strong> Budget-friendly</p>
+                    <p><strong>🎯 Interests:</strong> Culture, Temples, Food, Technology</p>
+                </div>
+
+                <div class="card">
+                    <h4>Quick Reference</h4>
+                    <p><strong>Emergency Numbers:</strong></p>
+                    <ul>
+                        <li>Emergency: 110 (Police), 119 (Fire/Ambulance)</li>
+                        <li>Tourist Hotline: 050-3816-2787</li>
+                    </ul>
+                    <p><strong>Embassy:</strong> Your country's embassy in Tokyo</p>
+                    <p><strong>Currency:</strong> Japanese Yen (¥)</p>
+                </div>
+
+                <div class="card">
+                    <h4>Weather Forecast</h4>
+                    <p><strong>March in Tokyo:</strong> Spring season</p>
+                    <p><strong>Temperature:</strong> 8-16°C (46-61°F)</p>
+                    <p><strong>Cherry Blossom Season:</strong> Peak bloom expected</p>
+                    <p><strong>Precipitation:</strong> Light rain possible</p>
+                    <p><strong>Packing:</strong> Layers, light jacket, comfortable shoes</p>
+                </div>
+            </aside>
+
+            <main>
+                <section id="itinerary">
+                    <h2>📅 7-Day Itinerary</h2>
+                    
+                    <div class="card day-card">
+                        <h3>Day 1: Arrival & Asakusa</h3>
+                        <h4>Morning</h4>
+                        <p>Arrive at Narita Airport, take Skyliner to Ueno. Check into capsule hotel in Asakusa.</p>
+                        <h4>Afternoon</h4>
+                        <p>Visit Senso-ji Temple, explore Nakamise Shopping Street. Traditional lunch at local restaurant.</p>
+                        <h4>Evening</h4>
+                        <p>Dinner in Asakusa, early rest to recover from jet lag.</p>
+                        <div class="highlight">
+                            <strong>💡 Tip:</strong> Get a 7-day JR Pass for unlimited train travel!
+                        </div>
+                    </div>
+
+                    <div class="card day-card">
+                        <h3>Day 2: Modern Tokyo</h3>
+                        <h4>Morning</h4>
+                        <p>Visit Tokyo Skytree, explore Sumida Aquarium. Coffee at local café.</p>
+                        <h4>Afternoon</h4>
+                        <p>Shibuya Crossing, Hachiko Statue, shopping in Shibuya Center Gai.</p>
+                        <h4>Evening</h4>
+                        <p>Robot Restaurant in Shinjuku, explore Golden Gai bars.</p>
+                        <div class="highlight">
+                            <strong>💡 Tip:</strong> Download Google Translate app with camera feature!
+                        </div>
+                    </div>
+
+                    <div class="card day-card">
+                        <h3>Day 3: Traditional Culture</h3>
+                        <h4>Morning</h4>
+                        <p>Visit Meiji Shrine, walk through Yoyogi Park.</p>
+                        <h4>Afternoon</h4>
+                        <p>Explore Harajuku, visit Omotesando Hills. Traditional tea ceremony experience.</p>
+                        <h4>Evening</h4>
+                        <p>Dinner in Shinjuku, visit observation deck for night views.</p>
+                    </div>
+
+                    <div class="card day-card">
+                        <h3>Day 4: Tsukiji & Ginza</h3>
+                        <h4>Morning</h4>
+                        <p>Early morning at Tsukiji Outer Market, fresh sushi breakfast.</p>
+                        <h4>Afternoon</h4>
+                        <p>Explore Ginza district, visit department stores and galleries.</p>
+                        <h4>Evening</h4>
+                        <p>Upscale dining in Ginza, explore night markets.</p>
+                    </div>
+
+                    <div class="card day-card">
+                        <h3>Day 5: Imperial Palace & Akihabara</h3>
+                        <h4>Morning</h4>
+                        <p>Imperial Palace East Gardens, learn about Japanese history.</p>
+                        <h4>Afternoon</h4>
+                        <p>Electronics and anime culture in Akihabara, maid café experience.</p>
+                        <h4>Evening</h4>
+                        <p>Dinner in Akihabara, explore game centers and electronics shops.</p>
+                    </div>
+
+                    <div class="card day-card">
+                        <h3>Day 6: Ueno & Museums</h3>
+                        <h4>Morning</h4>
+                        <p>Ueno Park, visit Tokyo National Museum.</p>
+                        <h4>Afternoon</h4>
+                        <p>Ueno Zoo, Ameyoko Market for souvenir shopping.</p>
+                        <h4>Evening</h4>
+                        <p>Farewell dinner at traditional izakaya.</p>
+                    </div>
+
+                    <div class="card day-card">
+                        <h3>Day 7: Departure</h3>
+                        <h4>Morning</h4>
+                        <p>Last-minute shopping in Tokyo Station, departure to airport.</p>
+                        <div class="highlight">
+                            <strong>💡 Tip:</strong> Allow 2-3 hours for airport procedures!
+                        </div>
+                    </div>
+                </section>
+
+                <section id="maps">
+                    <h2>🗺️ Interactive Maps</h2>
+                    
+                    <div class="card">
+                        <h3>Tokyo Overview</h3>
+                        <div class="map-container">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d207013.80785356044!2d139.6917!3d35.6895!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60188b2423b7e7d3%3A0x40a5e0e0e8f34067!2sTokyo%2C%20Japan!5e0!3m2!1sen!2sus!4v1643742023456!5m2!1sen!2sus" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                        </div>
+                        <p>Key locations in Tokyo:</p>
+                        <ul>
+                            <li>Senso-ji Temple (Asakusa)</li>
+                            <li>Tokyo Skytree</li>
+                            <li>Shibuya Crossing</li>
+                            <li>Meiji Shrine</li>
+                            <li>Imperial Palace</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="attractions">
+                    <h2>🏛️ Key Attractions</h2>
+                    
+                    <div class="tab-container">
+                        <button class="tab-button active" onclick="openTab(event, 'traditional')">Traditional</button>
+                        <button class="tab-button" onclick="openTab(event, 'modern')">Modern</button>
+                        <button class="tab-button" onclick="openTab(event, 'culture')">Culture</button>
+                    </div>
+
+                    <div id="traditional" class="tab-content" style="display: block;">
+                        <div class="card">
+                            <h4>Senso-ji Temple</h4>
+                            <p>Tokyo's oldest temple, founded in 628 AD. Experience traditional Japanese architecture and spiritual atmosphere.</p>
+                            <p><strong>Best Time:</strong> Early morning or late afternoon</p>
+                            <p><strong>Admission:</strong> Free</p>
+                        </div>
+                        
+                        <div class="card">
+                            <h4>Meiji Shrine</h4>
+                            <p>Dedicated to Emperor Meiji, surrounded by a peaceful forest in the heart of Tokyo.</p>
+                            <p><strong>Best Time:</strong> Early morning</p>
+                            <p><strong>Admission:</strong> Free</p>
+                        </div>
+                    </div>
+
+                    <div id="modern" class="tab-content">
+                        <div class="card">
+                            <h4>Tokyo Skytree</h4>
+                            <p>World's second tallest structure, offering spectacular views of Tokyo.</p>
+                            <p><strong>Best Time:</strong> Sunset for day and night views</p>
+                            <p><strong>Admission:</strong> ¥2,060 for main deck</p>
+                        </div>
+                        
+                        <div class="card">
+                            <h4>Shibuya Crossing</h4>
+                            <p>World's busiest pedestrian crossing, iconic symbol of modern Tokyo.</p>
+                            <p><strong>Best Time:</strong> Rush hours for full experience</p>
+                            <p><strong>Admission:</strong> Free</p>
+                        </div>
+                    </div>
+
+                    <div id="culture" class="tab-content">
+                        <div class="card">
+                            <h4>Robot Restaurant</h4>
+                            <p>Colorful robot show with music, dancing, and entertainment.</p>
+                            <p><strong>Best Time:</strong> Evening shows</p>
+                            <p><strong>Admission:</strong> ¥8,000</p>
+                        </div>
+                        
+                        <div class="card">
+                            <h4>Tsukiji Outer Market</h4>
+                            <p>Fresh seafood and traditional Japanese street food.</p>
+                            <p><strong>Best Time:</strong> Early morning</p>
+                            <p><strong>Admission:</strong> Free (food costs extra)</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="language">
+                    <h2>🗣️ Essential Japanese Phrases</h2>
+                    
+                    <div class="feature-grid">
+                        <div class="card">
+                            <h4>Basic Greetings</h4>
+                            <p><strong>Hello:</strong> Konnichiwa (kon-nee-chee-wah)</p>
+                            <p><strong>Thank you:</strong> Arigato gozaimasu (ah-ree-gah-toh goh-zah-ee-mahs)</p>
+                            <p><strong>Excuse me:</strong> Sumimasen (soo-mee-mah-sen)</p>
+                        </div>
+                        
+                        <div class="card">
+                            <h4>Dining</h4>
+                            <p><strong>Menu please:</strong> Menyū wo kudasai (men-yoo oh koo-dah-sah-ee)</p>
+                            <p><strong>Delicious:</strong> Oishii (oh-ee-shee)</p>
+                            <p><strong>Bill please:</strong> Okaikei wo kudasai (oh-kah-ee-kay oh koo-dah-sah-ee)</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="etiquette">
+                    <h2>🤝 Cultural Etiquette</h2>
+                    
+                    <div class="feature-grid">
+                        <div class="card">
+                            <h4>Temple Etiquette</h4>
+                            <ul>
+                                <li>Bow before entering</li>
+                                <li>Remove hat and sunglasses</li>
+                                <li>Speak quietly</li>
+                                <li>Follow photography rules</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="card">
+                            <h4>Dining Rules</h4>
+                            <ul>
+                                <li>Say "Itadakimasu" before eating</li>
+                                <li>Don't stick chopsticks upright in rice</li>
+                                <li>Slurping noodles is acceptable</li>
+                                <li>Don't pass food chopstick to chopstick</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="tips">
+                    <h2>💡 Travel Tips</h2>
+                    
+                    <div class="feature-grid">
+                        <div class="card">
+                            <h4>Transportation</h4>
+                            <p><strong>JR Pass:</strong> ¥29,650 for 7 days (excellent value)</p>
+                            <p><strong>IC Card:</strong> Suica/Pasmo for local transport</p>
+                            <p><strong>Apps:</strong> Google Maps, Hyperdia for train schedules</p>
+                        </div>
+                        
+                        <div class="card">
+                            <h4>Money & Payments</h4>
+                            <p><strong>Cash:</strong> Still preferred, carry sufficient cash</p>
+                            <p><strong>ATM:</strong> 7-Eleven, post offices have international ATMs</p>
+                            <p><strong>Credit Cards:</strong> Increasingly accepted</p>
+                        </div>
+                        
+                        <div class="card">
+                            <h4>Connectivity</h4>
+                            <p><strong>WiFi:</strong> Free at most hotels, stations, cafés</p>
+                            <p><strong>Pocket WiFi:</strong> Rent for ¥500/day</p>
+                            <p><strong>SIM Card:</strong> Available at airports</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="emergency">
+                    <div class="emergency-box">
+                        <h2>🚨 Emergency Information</h2>
+                        <p><strong>Police:</strong> 110</p>
+                        <p><strong>Fire/Ambulance:</strong> 119</p>
+                        <p><strong>Tourist Hotline:</strong> 050-3816-2787</p>
+                        <p><strong>Embassy:</strong> Contact your country's embassy</p>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tab-button");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

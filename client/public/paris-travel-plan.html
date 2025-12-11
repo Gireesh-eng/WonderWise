@@ -1,0 +1,730 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paris, France Travel Handbook - march 24-30,2025</title>
+    <style>
+        :root {
+            --primary-color: #2ecc71;
+            --secondary-color: #27ae60;
+            --accent-color: #f39c12;
+            --light-bg: #f9f9f9;
+            --card-bg: #fff;
+            --text-color: #333;
+            --header-text: #fff;
+            --shadow: 0 4px 8px rgba(0,0,0,0.1);
+            --hover-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            --border-radius: 8px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: var(--header-text);
+            text-align: center;
+            padding: 2em 0;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: 1.2rem;
+        }
+
+        /* Navigation Menu Styles */
+        nav {
+            background: linear-gradient(to right, #333333, #444444);
+            border-radius: var(--border-radius);
+            display: flex;
+            justify-content: center;
+            padding: 10px 0;
+            margin-bottom: 20px;
+        }
+
+        nav a {
+            color: white;
+            padding: 15px 20px;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-size: 1.1rem;
+        }
+
+        nav a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Container Styles */
+        .container {
+            display: flex;
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        .sidebar {
+            width: 25%;
+            padding-right: 20px;
+        }
+
+        .main-content {
+            width: 75%;
+        }
+
+        /* Card Styles */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 25px;
+            margin-bottom: 25px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .card h4 {
+            color: var(--primary-color);
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        /* Trip Overview Card */
+        .trip-overview p {
+            margin-bottom: 8px;
+        }
+
+        /* Quick Reference Card */
+        .quick-reference ul {
+            padding-left: 20px;
+        }
+
+        .quick-reference li {
+            margin-bottom: 5px;
+        }
+
+        /* Weather Forecast Card */
+        .weather-forecast ul {
+            padding-left: 20px;
+        }
+
+        .weather-forecast li {
+            margin-bottom: 5px;
+        }
+
+        /* Itinerary Section */
+        .itinerary-day {
+            border-left: 5px solid var(--primary-color);
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .itinerary-day:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .itinerary-day h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .itinerary-day h4 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .itinerary-day p {
+            font-size: 1rem;
+        }
+
+        .itinerary-day .travel-tip {
+            background-color: rgba(var(--primary-color-rgb), 0.1); /* Assuming you can access RGB value */
+            padding: 10px;
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        /* Maps Section */
+        .map-container {
+            width: 100%;
+            height: 400px;
+            margin-bottom: 25px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 1px solid #eee;
+        }
+
+        /* Key Attractions Section */
+        /* Style the tab */
+        .tab {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            display: flex;
+        }
+
+        /* Style the buttons inside the tab */
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 15px 20px;
+            transition: 0.3s;
+            font-size: 17px;
+            flex: 1;
+            font-weight: 500;
+        }
+
+        /* Change background color of buttons on hover */
+        .tab button:hover {
+            background-color: #ddd;
+        }
+
+        /* Create an active/current tablink class */
+        .tab button.active {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #FF8000 100%);
+            color: white;
+        }
+
+        /* Style the tab content */
+        .tabcontent {
+            display: none;
+            padding: 25px;
+            border: 1px solid #ccc;
+            border-top: none;
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            animation: fadeEffect 0.5s;
+        }
+
+        @keyframes fadeEffect {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
+
+        /* Language Section */
+        .phrase-card {
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 5px solid var(--accent-color);
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, margin-left 0.3s ease;
+        }
+
+        .phrase-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--hover-shadow);
+            margin-left: 5px;
+        }
+
+        /* Etiquette Section */
+        .etiquette-category {
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            transition: background-color 0.3s ease;
+        }
+
+        .etiquette-category:hover {
+            background-color: #e2e2e2;
+        }
+
+        /* Travel Tips Section */
+        .travel-tip-card {
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        /* Emergency Section */
+        .emergency-numbers {
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            border-left: 5px solid red;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 2.5rem;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        p {
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        small {
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar, .main-content {
+                width: 100%;
+                padding-right: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 1.5em 0;
+            }
+
+            header h1 {
+                font-size: 2rem;
+            }
+
+            header p {
+                font-size: 1rem;
+            }
+
+            .card {
+                padding: 15px;
+            }
+
+            h2 {
+                font-size: 1.75rem;
+            }
+
+            h3 {
+                font-size: 1.25rem;
+            }
+
+            p {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Paris, France</h1>
+        <p>Travel Handbook - March 24-30, 2025</p>
+    </header>
+
+    <nav>
+        <a href="#itinerary">Itinerary</a>
+        <a href="#maps">Maps</a>
+        <a href="#attractions">Key Attractions</a>
+        <a href="#language">Language</a>
+        <a href="#etiquette">Etiquette</a>
+        <a href="#travel-tips">Travel Tips</a>
+        <a href="#emergency">Emergency</a>
+    </nav>
+
+    <div class="container">
+        <aside class="sidebar">
+            <div class="card trip-overview">
+                <h4>Trip Overview</h4>
+                <p><strong>Dates:</strong> March 24-30, 2025</p>
+                <p><strong>Travelers:</strong> 2</p>
+                <p><strong>Budget:</strong> Luxury ($250-500/day)</p>
+                <p><strong>Interests:</strong> Culture & History, Food & Cuisine, Art & Museums, Adventure Sports, Photography, Nature & Wildlife, Shopping, Nightlife, Architecture, Local Experiences</p>
+                <p><strong>Special Notes:</strong> Focus on high-end experiences and unique local encounters.</p>
+            </div>
+
+            <div class="card quick-reference">
+                <h4>Quick Reference</h4>
+                <p><strong>Emergency Numbers:</strong></p>
+                <ul>
+                    <li>Emergency Number: 112</li>
+                    <li>Police: 17</li>
+                </ul>
+                <p><strong>Embassy Information:</strong></p>
+                <p>U.S. Embassy Paris</p>
+                <p>2 Avenue Gabriel, 75008 Paris, France</p>
+                <p>Phone: +33 1 43 12 22 22</p>
+                <p><strong>Medical Facilities:</strong></p>
+                <ul>
+                    <li>American Hospital of Paris: 63 Boulevard Victor Hugo, 92200 Neuilly-sur-Seine, Phone: +33 1 46 41 25 25</li>
+                    <li>Hôpital Européen Georges-Pompidou: 20 Rue Leblanc, 75015 Paris, Phone: +33 1 56 09 20 00</li>
+                </ul>
+                <p><strong>Natural Disaster Information:</strong></p>
+                <p>France generally has a low risk of major natural disasters. However, be aware of potential flooding in certain areas.</p>
+                <p><strong>Emergency phrases in local language:</strong></p>
+                <ul>
+                    <li>Help! - Au secours!</li>
+                    <li>Call the police! - Appelez la police!</li>
+                    <li>I need a doctor - J'ai besoin d'un médecin</li>
+                </ul>
+            </div>
+
+            <div class="card weather-forecast">
+                <h4>Weather Forecast</h4>
+                <p>General seasonal description: March in Paris is typically mild and can be unpredictable, transitioning from winter to spring. Expect a mix of sunny days, cloudy skies, and occasional rain.</p>
+                <p>City-specific temperatures:</p>
+                <ul>
+                    <li>Paris: 8-15°C (46-59°F)</li>
+                </ul>
+                <p>Special seasonal notes:</p>
+                <ul>
+                    <li>Local seasonal highlights: Blooming flowers in parks and gardens, outdoor markets starting up again.</li>
+                </ul>
+                <p>Precipitation information:</p>
+                <ul>
+                    <li>Type and frequency of precipitation: Light rain is common, occurring several times during the week.</li>
+                </ul>
+                <p>Packing recommendations:</p>
+                <ul>
+                    <li>Specific clothing items: Layers are key. Pack a light jacket, sweater, scarf, and waterproof coat.</li>
+                    <li>Essential gear for the season: Umbrella, comfortable walking shoes.</li>
+                </ul>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <section id="itinerary">
+                <h2>Itinerary</h2>
+
+                <div class="itinerary-day">
+                    <h3>Day 1: Arrival & Parisian Charm</h3>
+                    <h4>Morning</h4>
+                    <p>Arrive at Charles de Gaulle Airport (CDG), private transfer to Hotel Plaza Athénée. Check in and settle into your luxurious accommodations.</p>
+                    <h4>Afternoon</h4>
+                    <p>Stroll along the Champs-Élysées, window shop at designer boutiques, and enjoy a coffee at a classic Parisian café.</p>
+                    <h4>Evening</h4>
+                    <p>Fine dining experience at Le Jules Verne, a Michelin-starred restaurant located on the second floor of the Eiffel Tower.</p>
+                    <div class="travel-tip">Consider booking Le Jules Verne well in advance, as reservations are highly sought after.</div>
+                </div>
+
+                <div class="itinerary-day">
+                    <h3>Day 2: Art & History Immersion</h3>
+                    <h4>Morning</h4>
+                    <p>Private guided tour of the Louvre Museum, focusing on key masterpieces and hidden gems. Prioritize seeing the Mona Lisa, Venus de Milo, and Winged Victory of Samothrace.</p>
+                    <h4>Afternoon</h4>
+                    <p>Explore the Latin Quarter, visit the Sorbonne University, and wander through the charming streets filled with bookstores and cafes.</p>
+                    <h4>Evening</h4>
+                    <p>Attend a performance at the Opéra Garnier, a stunning architectural masterpiece. Enjoy a pre-theater dinner at a nearby bistro.</p>
+                    <div class="travel-tip">Wear comfortable shoes for extensive walking throughout the day.</div>
+                </div>
+
+                <div class="itinerary-day">
+                    <h3>Day 3: Versailles & Gardens</h3>
+                    <h4>Morning</h4>
+                    <p>Day trip to the Palace of Versailles. Guided tour of the palace, including the Hall of Mirrors and the royal apartments.</p>
+                    <h4>Afternoon</h4>
+                    <p>Explore the extensive gardens of Versailles, take a boat ride on the Grand Canal, and visit the Petit Trianon and Marie Antoinette's Estate.</p>
+                    <h4>Evening</h4>
+                    <p>Return to Paris. Romantic dinner cruise on the Seine River, enjoying the illuminated landmarks.</p>
+                    <div class="travel-tip">Pre-book transportation and tickets to Versailles to avoid long lines.</div>
+                </div>
+
+                <div class="itinerary-day">
+                    <h3>Day 4: Montmartre & Artistic Flair</h3>
+                    <h4>Morning</h4>
+                    <p>Explore Montmartre, visit the Sacré-Cœur Basilica, and enjoy the panoramic views of Paris.</p>
+                    <h4>Afternoon</h4>
+                    <p>Wander through Place du Tertre, where artists create and sell their work. Get your portrait sketched.</p>
+                    <h4>Evening</h4>
+                    <p>Experience the Moulin Rouge show, a classic Parisian cabaret. Enjoy dinner at a traditional French restaurant in Montmartre.</p>
+                </div>
+
+                <div class="itinerary-day">
+                    <h3>Day 5: Food & Shopping Delights</h3>
+                    <h4>Morning</h4>
+                    <p>Cooking class at Le Cordon Bleu, learning to prepare classic French dishes.</p>
+                    <h4>Afternoon</h4>
+                    <p>Luxury shopping experience at Le Bon Marché, a high-end department store. Explore the Marais district for unique boutiques and vintage shops.</p>
+                    <h4>Evening</h4>
+                    <p>Wine tasting at a prestigious cellar, followed by dinner at a gourmet restaurant in the Saint-Germain-des-Prés area.</p>
+                </div>
+
+                <div class="itinerary-day">
+                    <h3>Day 6: Hidden Gems & Local Experiences</h3>
+                    <h4>Morning</h4>
+                    <p>Explore the Canal Saint-Martin area, known for its trendy cafes, boutiques, and street art.</p>
+                    <h4>Afternoon</h4>
+                    <p>Visit the Musée Rodin, showcasing the works of Auguste Rodin, including "The Thinker" and "The Kiss."</p>
+                    <h4>Evening</h4>
+                    <p>Enjoy a jazz performance at a famous jazz club in Saint-Germain-des-Prés.</p>
+                </div>
+
+                <div class="itinerary-day">
+                    <h3>Day 7: Departure</h3>
+                    <h4>Morning</h4>
+                    <p>Enjoy a leisurely breakfast at your hotel.</p>
+                    <h4>Afternoon</h4>
+                    <p>Last-minute souvenir shopping. Private transfer to Charles de Gaulle Airport (CDG) for your departure.</p>
+                </div>
+
+            </section>
+
+            <section id="maps">
+                <h2>Maps</h2>
+
+                <div class="card">
+                    <h3>Paris</h3>
+                    <div class="map-container">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2524.699549721435!2d2.348853!3d48.85341000000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e66e1f06e2b70f%3A0x40b82c3688c9460!2sParis%2C%20France!5e0!3m2!1sen!2sus!4v1700000000000"
+                            width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                    </div>
+                    <p>Key locations in Paris:</p>
+                    <ul>
+                        <li>Eiffel Tower</li>
+                        <li>Louvre Museum</li>
+                        <li>Notre-Dame Cathedral</li>
+                        <li>Arc de Triomphe</li>
+                        <li>Montmartre</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>Versailles</h3>
+                    <div class="map-container">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2624.9874540904533!2d2.120195575743498!3d48.80487261223759!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e67cd561c88039%3A0xb4082c743e998b40!2sPalace%20of%20Versailles!5e0!3m2!1sen!2sus!4v1700000000000"
+                            width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                    </div>
+                    <p>Key locations in Versailles:</p>
+                    <ul>
+                        <li>Palace of Versailles</li>
+                        <li>Gardens of Versailles</li>
+                        <li>Grand Trianon</li>
+                        <li>Petit Trianon</li>
+                        <li>Marie Antoinette's Estate</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="attractions">
+                <h2>Key Attractions</h2>
+
+                <div class="tab">
+                    <button class="tablinks active" onclick="openCity(event, 'Paris')">Paris</button>
+                    <button class="tablinks" onclick="openCity(event, 'VersaillesAttractions')">Versailles</button>
+                </div>
+
+                <div id="Paris" class="tabcontent" style="display:block">
+                  <div class="card">
+                      <h4>Eiffel Tower</h4>
+                      <p>The Eiffel Tower is a wrought-iron lattice tower on the Champ de Mars in Paris, France. It is named after the engineer Gustave Eiffel, whose company designed and built the tower.</p>
+                      <p><strong>Best Time to Visit:</strong> Early morning or late evening to avoid crowds.</p>
+                      <p><strong>Admission Fees:</strong> €17.10 - €26.80 depending on access options.</p>
+                  </div>
+
+                  <div class="card">
+                      <h4>Louvre Museum</h4>
+                      <p>The Louvre Museum is the world's largest art museum and a historic monument in Paris, France. A central landmark of the city, it is located on the Right Bank of the Seine in the 1st arrondissement.</p>
+                      <p><strong>Best Time to Visit:</strong> Wednesday or Friday evenings for smaller crowds.</p>
+                      <p><strong>Admission Fees:</strong> €17 per person.</p>
+                  </div>
+
+                  <div class="card">
+                      <h4>Notre-Dame Cathedral</h4>
+                      <p>Notre-Dame Cathedral is a medieval Catholic cathedral on the Île de la Cité in the fourth arrondissement of Paris, France. The cathedral is considered one of the finest examples of French Gothic architecture.</p>
+                      <p><strong>Best Time to Visit:</strong> Currently under reconstruction, but the surrounding area is worth visiting.</p>
+                      <p><strong>Admission Fees:</strong> Free (access to the grounds).</p>
+                  </div>
+                </div>
+
+                <div id="VersaillesAttractions" class="tabcontent">
+                  <div class="card">
+                      <h4>Palace of Versailles</h4>
+                      <p>The Palace of Versailles was the principal royal residence of France from 1682, under Louis XIV, until the start of the French Revolution in 1789, under Louis XVI.</p>
+                      <p><strong>Best Time to Visit:</strong> Weekdays in the off-season.</p>
+                      <p><strong>Admission Fees:</strong> €18-€20.</p>
+                  </div>
+
+                  <div class="card">
+                      <h4>Gardens of Versailles</h4>
+                      <p>The Gardens of Versailles occupy part of what was once the Domaine royal de Versailles, the royal demesne of the château of Versailles.</p>
+                      <p><strong>Best Time to Visit:</strong> Spring or Summer for the full blooming effect.</p>
+                      <p><strong>Admission Fees:</strong> Included with Palace ticket or separate admission on some days.</p>
+                  </div>
+
+                </div>
+
+            </section>
+
+            <section id="language">
+                <h2>Language</h2>
+
+                <div class="phrase-card">
+                    <p>Bonjour</p>
+                    <p><em>(Bohn-zhoor)</em></p>
+                    <p>Hello</p>
+                </div>
+
+                <div class="phrase-card">
+                    <p>Au revoir</p>
+                    <p><em>(O ruh-vwar)</em></p>
+                    <p>Goodbye</p>
+                </div>
+
+                <div class="phrase-card">
+                    <p>Merci</p>
+                    <p><em>(Mer-see)</em></p>
+                    <p>Thank you</p>
+                </div>
+
+                <div class="phrase-card">
+                    <p>S'il vous plaît</p>
+                    <p><em>(Seal voo প্লে)</em></p>
+                    <p>Please</p>
+                </div>
+
+                <div class="phrase-card">
+                    <p>Excusez-moi</p>
+                    <p><em>(Ex-kew-zay mwah)</em></p>
+                    <p>Excuse me</p>
+                </div>
+
+                <div class="phrase-card">
+                    <p>Parlez-vous anglais?</p>
+                    <p><em>(Par-lay voo ahn-glay?)</em></p>
+                    <p>Do you speak English?</p>
+                </div>
+            </section>
+
+            <section id="etiquette">
+                <h2>Etiquette</h2>
+
+                <div class="etiquette-category">
+                    <h4>General Etiquette</h4>
+                    <p>Greetings: Start with "Bonjour" when entering a shop or interacting with someone.</p>
+                    <p>Dress Code: Parisians tend to dress stylishly. Consider dressing smartly, especially for dining.</p>
+                </div>
+
+                <div class="etiquette-category">
+                    <h4>Dining Rules</h4>
+                    <p>Table Manners: Keep your hands above the table during meals. Bread is often placed directly on the table, not on a plate.</p>
+                    <p>Tipping: Tipping is not mandatory, as a service charge is usually included. However, you can leave a small additional tip for exceptional service.</p>
+                </div>
+
+                <div class="etiquette-category">
+                    <h4>Cultural Behavior</h4>
+                    <p>Public Displays of Affection: Generally accepted, but avoid excessive displays.</p>
+                    <p>Noise Levels: Keep your voice down in public spaces.</p>
+                </div>
+
+                <div class="etiquette-category">
+                    <h4>Transportation Guidelines</h4>
+                    <p>Public Transportation: Be mindful of your belongings. Offer your seat to elderly or pregnant passengers.</p>
+                    <p>Sidewalks: Walk on the right side of the sidewalk.</p>
+                </div>
+            </section>
+
+            <section id="travel-tips">
+                <h2>Travel Tips</h2>
+
+                <div class="travel-tip-card">
+                    <h4>Money & Payments</h4>
+                    <p>Euro (€) is the currency. Credit cards are widely accepted, but it's good to have some cash for smaller establishments and markets.</p>
+                    <p>Current Exchange Rate: Approximately €1 = $1.10 (as of November 2023 - please check current rates).</p>
+                </div>
+
+                <div class="travel-tip-card">
+                    <h4>Transportation</h4>
+                    <p>Paris Visite pass is a good option for unlimited travel on the Metro, bus, and RER within specified zones.</p>
+                    <p>Consider using the Batobus, a hop-on-hop-off boat service on the Seine River, for scenic transportation.</p>
+                </div>
+
+                <div class="travel-tip-card">
+                    <h4>Connectivity</h4>
+                    <p>Free WiFi is available in many cafes, restaurants, and public spaces.</p>
+                    <p>Consider purchasing a local SIM card for mobile data if you plan to use your phone extensively.</p>
+                </div>
+
+                <div class="travel-tip-card">
+                    <h4>Packing Essentials</h4>
+                    <p>Pack layers for unpredictable weather. Comfortable walking shoes are a must.</p>
+                    <p>Include a waterproof jacket or umbrella for potential rain. A stylish scarf can add warmth and flair.</p>
+                </div>
+
+                <div class="travel-tip-card">
+                    <h4>Cultural Tips</h4>
+                    <p>Learn a few basic French phrases to show respect and enhance your interactions with locals.</p>
+                    <p>Be prepared for a slower pace of service in restaurants and cafes. Relax and enjoy the experience.</p>
+                </div>
+            </section>
+
+            <section id="emergency">
+                <h2>Emergency</h2>
+                <div class="emergency-numbers">
+                    <h4>Emergency Numbers</h4>
+                    <p>Emergency: 112</p>
+                    <p>Police: 17</p>
+                    <p>Fire: 18</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        function openCity(evt, cityName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(cityName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        // Add smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+```
