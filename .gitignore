@@ -33,3 +33,9 @@ Thumbs.db
 *.db
 *.sqlite
 
+# docs
+CREATE_ENV_FILE.md
+ENV_TEMPLATE.txt
+PROJECT_SUMMARY.md
+SETUP.md
+CI_CD_DOCUMENTATION.md

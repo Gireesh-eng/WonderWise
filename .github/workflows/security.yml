@@ -1,0 +1,235 @@
+name: Security and Dependency Scanning
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    - cron: '0 2 * * 1'  # Weekly on Monday at 2 AM UTC
+  workflow_dispatch:
+
+jobs:
+  vulnerability-scan:
+    name: Vulnerability Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: |
+        npm ci
+        cd client && npm ci
+        
+    - name: Run npm audit (root)
+      run: |
+        echo "🔒 Scanning root dependencies..."
+        npm audit --audit-level moderate
+        npm audit --json > audit-root.json || true
+        
+    - name: Run npm audit (client)
+      run: |
+        echo "🔒 Scanning client dependencies..."
+        cd client
+        npm audit --audit-level moderate
+        npm audit --json > ../audit-client.json || true
+        
+    - name: Upload audit reports
+      uses: actions/upload-artifact@v4
+      with:
+        name: security-audit-reports
+        path: |
+          audit-root.json
+          audit-client.json
+        retention-days: 30
+
+  codeql-analysis:
+    name: CodeQL Analysis
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+      
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'javascript' ]
+        
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: ${{ matrix.language }}
+        
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@v3
+      
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+
+  dependency-review:
+    name: Dependency Review
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Dependency Review
+      uses: actions/dependency-review-action@v4
+      with:
+        fail-on-severity: moderate
+
+  secret-scan:
+    name: Secret Scanning
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        
+    - name: Run TruffleHog OSS
+      run: |
+        echo "🕵️ Running secret scanning..."
+        docker run --rm -v "$PWD":/work trufflesecurity/trufflehog:latest git /work --json > trufflehog-results.json || true
+        
+    - name: Upload secret scan results
+      uses: actions/upload-artifact@v4
+      with:
+        name: secret-scan-results
+        path: trufflehog-results.json
+        retention-days: 30
+
+  sast-scan:
+    name: Static Application Security Testing
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: |
+        npm ci
+        cd client && npm ci
+        
+    - name: Run ESLint security rules
+      run: |
+        echo "🔍 Running ESLint security rules..."
+        npx eslint . --ext .js,.jsx,.ts,.tsx --config .eslintrc.security.js || echo "Security linting not configured"
+        
+    - name: Run semgrep
+      uses: semgrep/semgrep-action@v1
+      with:
+        config: >-
+          p/security-audit
+          p/secrets
+          p/nodejs
+          p/react
+        publish: true
+        generate_sarif: true
+        
+    - name: Upload SARIF file
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: semgrep.sarif
+
+  license-check:
+    name: License Compliance
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: |
+        npm ci
+        cd client && npm ci
+        
+    - name: Check licenses
+      run: |
+        echo "📄 Checking license compliance..."
+        npx license-checker --onlyAllow 'MIT;Apache-2.0;BSD-2-Clause;BSD-3-Clause;ISC' || echo "Some licenses may need review"
+        
+    - name: Generate license report
+      run: |
+        npx license-checker --csv > license-report.csv || true
+        
+    - name: Upload license report
+      uses: actions/upload-artifact@v4
+      with:
+        name: license-report
+        path: license-report.csv
+        retention-days: 30
+
+  security-report:
+    name: Security Report
+    runs-on: ubuntu-latest
+    needs: [vulnerability-scan, codeql-analysis, secret-scan, sast-scan, license-check]
+    if: always()
+    
+    steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      
+    - name: Generate security summary
+      run: |
+        echo "# Security Scan Summary" > security-summary.md
+        echo "" >> security-summary.md
+        echo "## Scan Results" >> security-summary.md
+        echo "- **Vulnerability Scan**: ${{ needs.vulnerability-scan.result }}" >> security-summary.md
+        echo "- **CodeQL Analysis**: ${{ needs.codeql-analysis.result }}" >> security-summary.md
+        echo "- **Secret Scan**: ${{ needs.secret-scan.result }}" >> security-summary.md
+        echo "- **SAST Scan**: ${{ needs.sast-scan.result }}" >> security-summary.md
+        echo "- **License Check**: ${{ needs.license-check.result }}" >> security-summary.md
+        echo "" >> security-summary.md
+        echo "Generated on: $(date)" >> security-summary.md
+        
+    - name: Upload security summary
+      uses: actions/upload-artifact@v4
+      with:
+        name: security-summary
+        path: security-summary.md
+        retention-days: 90
+        
+    - name: Comment on PR
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const summary = fs.readFileSync('security-summary.md', 'utf8');
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: summary
+          });

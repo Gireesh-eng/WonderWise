@@ -1,0 +1,211 @@
+name: Build and Package
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  build-frontend:
+    name: Build Frontend
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: |
+        npm ci
+        cd client && npm ci
+        
+    - name: Build frontend
+      run: |
+        echo "🏗️ Building frontend..."
+        cd client
+        npm run build
+        
+    - name: Upload frontend build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: frontend-build
+        path: client/dist/
+        retention-days: 30
+        
+    - name: Generate build info
+      run: |
+        cd client
+        echo "📊 Build Information:"
+        echo "Build Date: $(date)"
+        echo "Git Commit: ${{ github.sha }}"
+        echo "Git Branch: ${{ github.ref_name }}"
+        echo "Node Version: $(node --version)"
+        echo "Build Size: $(du -sh dist/)"
+        
+    - name: Analyze bundle size
+      run: |
+        cd client
+        echo "📦 Bundle Size Analysis:"
+        npx vite-bundle-analyzer dist || echo "Bundle analyzer not available"
+
+  build-backend:
+    name: Build Backend
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Prepare backend for production
+      run: |
+        echo "🏗️ Preparing backend for production..."
+        # Create production-ready package
+        mkdir -p dist
+        
+        # Copy essential files
+        cp -r server dist/
+        cp package.json dist/
+        cp package-lock.json dist/
+        
+        # Install only production dependencies
+        cd dist
+        npm ci --only=production
+        
+    - name: Upload backend build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: backend-build
+        path: dist/
+        retention-days: 30
+
+  build-validation:
+    name: Build Validation
+    runs-on: ubuntu-latest
+    needs: [build-frontend, build-backend]
+    
+    steps:
+    - name: Download frontend artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: frontend-build
+        path: frontend-dist
+        
+    - name: Download backend artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: backend-build
+        path: backend-dist
+        
+    - name: Validate build structure
+      run: |
+        echo "✅ Validating build structure..."
+        
+        # Check frontend build
+        echo "Frontend build files:"
+        ls -la frontend-dist/
+        
+        # Check essential frontend files
+        if [ -f "frontend-dist/index.html" ]; then
+          echo "✅ Frontend index.html found"
+        else
+          echo "❌ Frontend index.html missing"
+          exit 1
+        fi
+        
+        # Check backend build
+        echo "Backend build files:"
+        ls -la backend-dist/
+        
+        # Check essential backend files
+        if [ -f "backend-dist/server/index.js" ]; then
+          echo "✅ Backend server file found"
+        else
+          echo "❌ Backend server file missing"
+          exit 1
+        fi
+        
+        echo "🎉 Build validation completed successfully!"
+
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    needs: [build-frontend, build-backend, build-validation]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+    - name: Download frontend artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: frontend-build
+        path: release/frontend
+        
+    - name: Download backend artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: backend-build
+        path: release/backend
+        
+    - name: Create release package
+      run: |
+        echo "📦 Creating release package..."
+        
+        # Create release directory
+        mkdir -p travelgen-release
+        
+        # Copy frontend build
+        cp -r release/frontend travelgen-release/
+        
+        # Copy backend build
+        cp -r release/backend travelgen-release/
+        
+        # Copy additional files
+        cp README.md travelgen-release/
+        cp SETUP.md travelgen-release/
+        cp ENV_TEMPLATE.txt travelgen-release/
+        
+        # Create release info
+        cat > travelgen-release/RELEASE_INFO.txt << EOF
+        TravelGen Release Information
+        ============================
+        
+        Version: ${{ github.sha }}
+        Release Date: $(date)
+        Branch: ${{ github.ref_name }}
+        
+        Installation:
+        1. Extract all files
+        2. Run 'npm install' in backend directory
+        3. Create .env file using ENV_TEMPLATE.txt
+        4. Run 'npm start' to start the server
+        5. Open frontend/index.html in browser
+        
+        For detailed instructions, see README.md and SETUP.md
+        EOF
+        
+        # Create zip file
+        cd travelgen-release
+        zip -r ../travelgen-release.zip .
+        
+    - name: Upload release artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: travelgen-release
+        path: travelgen-release.zip
+        retention-days: 90
