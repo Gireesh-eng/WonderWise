@@ -6,7 +6,6 @@ import {
   MapPin, 
   Calendar, 
   FileText, 
-  TrendingUp,
   Sparkles,
   Globe,
   User,

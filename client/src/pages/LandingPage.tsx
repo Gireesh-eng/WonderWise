@@ -12,8 +12,7 @@ import {
   Clock,
   Shield,
   Star,
-  ArrowRight,
-  CheckCircle2
+  ArrowRight
 } from 'lucide-react';
 import Examples from '../components/Examples';
 import Footer from '../components/Footer';

@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import TripPlannerForm from '../components/TripPlannerForm';
 import ItineraryDisplay from '../components/ItineraryDisplay';
@@ -13,7 +12,6 @@ export default function CreateItinerary() {
   const [itinerary, setItinerary] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
   const { refreshUser } = useAuth();
 
   const handleSubmit = async (formData: {

@@ -10,7 +10,6 @@ import {
   Users, 
   DollarSign,
   Star,
-  ExternalLink,
   Sparkles,
   ArrowRight
 } from 'lucide-react';
